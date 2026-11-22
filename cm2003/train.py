@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 
 def run_batch(model, data, target, criterion, optimizer, is_training=True):
     """
+
     Run a single batch through the model.
 
     Complete the code between ---CODE START HERE--- and ---CODE END HERE---:
@@ -17,6 +18,30 @@ def run_batch(model, data, target, criterion, optimizer, is_training=True):
     # Hint: MedMNIST labels have shape (batch_size, 1), while nn.CrossEntropyLoss expects
     # targets of shape (batch_size,), so use target.reshape(-1) when computing the loss.
     loss = None
+    criterion = nn.CrossEntropyLoss()
+
+    if is_training:
+        mode = "train"
+        optimizer.zero_grad() # Zeroing optimizer gradients
+        # Forward pass through the model
+        outputs = model(data)
+        # Compute loss
+        # Compute the loss and its gradients
+        loss = criterion(outputs, target)
+        loss.backward()
+
+        # Adjust learning weights
+        optimizer.step()
+
+    else:
+        mode = "eval"
+        outputs = model(data)
+        # Compute loss
+        # Compute the loss and its gradients
+        loss = criterion(outputs, target)
+    
+    
+
 
     # ---CODE END HERE---
 
@@ -85,7 +110,16 @@ def train_epoch(model, loader, criterion, optimizer, device):
 
     for data, target in loader:
         # ---CODE START HERE---
-        pass
+
+        # Move data to the specified device
+        data = data.to(device)
+        # Call run_batch
+        batch_loss = run_batch(model, data, target, criterion, optimizer)
+        #Add batch loss
+        total_loss+=batch_loss
+
+
+
         # ---CODE END HERE---
 
     avg_loss = total_loss / len(loader)
@@ -107,7 +141,7 @@ def train(model, train_loader, val_loader, criterion, optimizer, device, num_epo
 
     for epoch in range(num_epochs):
         # ---CODE START HERE---
-        train_loss = None
+        train_loss = train_epoch(model,train_loader,criterion, optimizer, device) 
 
         # ---CODE END HERE---
 
