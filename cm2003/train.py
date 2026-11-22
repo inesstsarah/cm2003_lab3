@@ -27,7 +27,7 @@ def run_batch(model, data, target, criterion, optimizer, is_training=True):
         outputs = model(data)
         # Compute loss
         # Compute the loss and its gradients
-        loss = criterion(outputs, target)
+        loss = criterion(outputs, target.reshape(-1))
         loss.backward()
 
         # Adjust learning weights
@@ -38,7 +38,7 @@ def run_batch(model, data, target, criterion, optimizer, is_training=True):
         outputs = model(data)
         # Compute loss
         # Compute the loss and its gradients
-        loss = criterion(outputs, target)
+        loss = criterion(outputs, target.reshape(-1))
     
     
 
