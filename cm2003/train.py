@@ -110,6 +110,7 @@ def train_epoch(model, loader, criterion, optimizer, device):
 
     for data, target in loader:
         # ---CODE START HERE---
+        target = target.to(device)
 
         # Move data to the specified device
         data = data.to(device)

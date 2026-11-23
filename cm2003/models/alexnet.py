@@ -26,34 +26,37 @@ class AlexNet(nn.Module):
         # Step 1: Implement the features section for example in a sequential manner
 
         self.features = nn.Sequential(
-            nn.Conv2d(in_channels, 32,kernel_size = 3, stride = 1, padding = 1),
-            nn.ReLU(inplace=True),
-            nn.MaxPool2d(kernel_size = 2, stride = 2),
-            nn.Conv2d(32, 64, kernel_size = 3, stride = 1),
-            nn.MaxPool2d(kernel_size = 2, stride = 2),
-            nn.Conv2d(64, 128, kernel_size = 3, stride = 1, padding = 1),
-            nn.ReLU(inplace = True),
             # Conv1: 3x3 kernel, 1 stride, 1 padding, 32 output channels
-            #  relu
+            # relu
             # MaxPool1: 2x2 kernel, 2 stride
             # Conv2: 3x3 kernel, 1 stride, 1 padding, 64 output channels
             # relu
             # MaxPool2: 2x2 kernel, 2 stride
             # Conv3: 3x3 kernel, 1 stride, 1 padding, 128 output channels
             # relu
+            nn.Conv2d(in_channels, 32,kernel_size = 3, stride = 1, padding = 1),
+            nn.ReLU(inplace=True),
+            nn.MaxPool2d(kernel_size = 2, stride = 2),
+            nn.Conv2d(32, 64, kernel_size = 3, stride = 1, padding = 1),
+            nn.ReLU(inplace = True),
+            nn.MaxPool2d(kernel_size = 2, stride = 2),
+            nn.Conv2d(64, 128, kernel_size = 3, stride = 1, padding = 1),
+            nn.ReLU(inplace = True),
+            
         )
 
         # Step 2: Implement the adaptive average pooling layer
-        self.avgpool = nn.AdaptiveAvgPool2d((6,6)) # Not sure what size actually TODO
+        self.avgpool = nn.AdaptiveAvgPool2d((3,3)) # Not sure what size actually TODO
 
         # Step 3: Implement the classifier section
         self.classifier = nn.Sequential(
-            nn.Linear(128 * 3 * 3 * 256, 256),
-            nn.ReLU(inplace=True),
-            nn.Linear(256,num_classes),
             # Linear (128 * 3 * 3, 256)
             # relu
-            # Linear (256, num classes)          
+            # Linear (256, num classes) 
+            nn.Linear(128 * 3 * 3, 256),
+            nn.ReLU(inplace=True),
+            nn.Linear(256,num_classes),
+                     
         )
         # ---CODE END HERE---
 
@@ -70,9 +73,17 @@ class AlexNet(nn.Module):
         # ---CODE START HERE---
         # Step 4: Implement the forward method
         x = self.features(x)
+        #print(x.shape)
+
         x = self.avgpool(x)
+        #print(x.shape)
+
         x = torch.flatten(x, 1)
+        #print(x.shape)
+
         x = self.classifier(x)
+        #print(x.shape)
+
         # ---CODE END HERE---
         return x
 

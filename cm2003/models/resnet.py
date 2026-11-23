@@ -33,20 +33,41 @@ class ResNetBlock(nn.Module):
         # BatchNorm2
         # Conv3: 1x1 kernel, 1 stride, no padding, out_channels * expansion output channels
         # BatchNorm3
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size = 1, stride = 1)
+        self.batchnorm1 = nn.BatchNorm2d(out_channels)
+        self.conv2 = nn.Conv2d(out_channels, out_channels, stride=stride, kernel_size = 3, padding = 1) # TODO: Check if this is correct
+        self.batchnorm2 = nn.BatchNorm2d(out_channels)
+        self.conv3 = nn.Conv2d(out_channels, out_channels*self.expansion, kernel_size = 1)
+        self.batchnorm3 = nn.BatchNorm2d(out_channels*self.expansion)
+
+
+
 
         # Step 2: Implement the skip connection
         self.identity_downsample = None
         if stride != 1 or in_channels != out_channels * self.expansion:
             # Downsample the input to match the output dimensions
+            self.identity_downsample = nn.Sequential(
+                nn.Conv2d(
+                    in_channels, 
+                    out_channels * self.expansion,
+                    kernel_size = 1, 
+                    stride = self.stride,
+                    bias = False
+
+                ),
+                nn.BatchNorm2d(out_channels*self.expansion)
+
+            )
             pass
   
 
-        self.relu = nn.ReLU(inplace=True)
+        self.relu = nn.ReLU()
         #--CODE END--
 
     def forward(self, x):
         #--CODE START--
-        out = x
+        #out = x
         # Step 3: Implement the forward method
         # Save input as identity
         # Apply Conv1, BatchNorm1, and ReLU
@@ -55,6 +76,33 @@ class ResNetBlock(nn.Module):
         # Apply identity_downsample if it exists
         # Add identity to the output
         # Apply final ReLU
+        identity = x
+        x = self.conv1(x)
+        #print(x.shape)
+        x = self.batchnorm1(x)
+        #print(x.shape)
+        x = self.relu(x)
+        #print(x.shape)
+        x = self.conv2(x)
+        #print(x.shape)
+        x = self.batchnorm2(x)
+        #print(x.shape)
+        x = self.relu(x)
+        #print(x.shape)
+        x = self.conv3(x)
+        #print(x.shape)
+        x = self.batchnorm3(x)
+        #print(x.shape)
+
+        
+        if self.identity_downsample is not None:
+            identity = self.identity_downsample(identity)
+        x = x +  identity
+        x = self.relu(x)
+        out = x
+        
+
+
         #--CODE END--
 
         return out
