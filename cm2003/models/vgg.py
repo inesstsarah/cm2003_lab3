@@ -1,5 +1,7 @@
 import torch
 import torch.nn as nn
+    
+    
 
 class VGG13(nn.Module):
     """
@@ -19,57 +21,121 @@ class VGG13(nn.Module):
         in_channels (int): Number of input channels. Default is 1 for MNIST.
     """
 
-    def __init__(self, num_classes=10, in_channels=1):
+    def __init__(self, num_classes=10, in_channels=1, use_dropout_conv = False, dropout_prob = 0.4):
         super(VGG13, self).__init__()
-    
-        # ---CODE START HERE---
-        # Step 1: Implement the features section
-        self.features = nn.Sequential(#TODO
-            # First block
-            # Conv2d: in_channels -> 64, 3x3 kernel, 1 padding
-            nn.Conv2d(in_channels,64,3,padding=1),
-            # ReLU
-            nn.ReLU(inplace=True),
-            # Conv2d: 64 -> 64, 3x3 kernel, 1 padding
-            nn.Conv2d(64,64,3,padding=1),
-            # ReLU
-            nn.ReLU(inplace=True),
-            # MaxPool2d: 2x2 kernel, 2 stride
-            nn.MaxPool2d(2,stride=2),
-            # Second block
-            # Conv2d: 64 -> 128, 3x3 kernel, 1 padding
-            nn.Conv2d(64,128,3,padding=1),
-            # ReLU
-            nn.ReLU(inplace=True),
-            # Conv2d: 128 -> 128, 3x3 kernel, 1 padding
-            nn.Conv2d(128,128,3,padding=1),
-            # ReLU
-            nn.ReLU(inplace=True),
-            # MaxPool2d: 2x2 kernel, 2 stride
-            nn.MaxPool2d(2,stride=2),
-            # Third block
-            # Conv2d: 128 -> 256, 3x3 kernel, 1 padding
-            nn.Conv2d(128,256,3,padding=1),
-            # ReLU
-            nn.ReLU(inplace=True),
-            # Conv2d: 256 -> 256, 3x3 kernel, 1 padding
-            nn.Conv2d(256,256,3,padding=1),
-            # ReLU
-            nn.ReLU(inplace=True),
-            # MaxPool2d: 2x2 kernel, 2 stride
-            nn.MaxPool2d(2,stride=2),
-            # Fourth block
-            # Conv2d: 256 -> 512, 3x3 kernel, 1 padding
-            nn.Conv2d(256,512,3,padding=1),
-            # ReLU
-            nn.ReLU(inplace=True),
-            # Conv2d: 512 -> 512, 3x3 kernel, 1 padding
-            nn.Conv2d(512,512,3,padding=1),
-            # ReLU
-            nn.ReLU(inplace=True),
-            # MaxPool2d: 2x2 kernel, 2 stride
-            nn.MaxPool2d(2,stride=2)
-        )
+
+        # If we want to use dropout on the convolutional blocks
+        if use_dropout_conv:
+            # ---CODE START HERE---
+            # Step 1: Implement the features section
+            self.features = nn.Sequential(#TODO
+                # First block
+                # Conv2d: in_channels -> 64, 3x3 kernel, 1 padding
+                nn.Conv2d(in_channels,64,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+
+                # Conv2d: 64 -> 64, 3x3 kernel, 1 padding
+                nn.Conv2d(64,64,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # MaxPool2d: 2x2 kernel, 2 stride
+                nn.MaxPool2d(2,stride=2),
+
+                # Second block
+                # Conv2d: 64 -> 128, 3x3 kernel, 1 padding
+                nn.Conv2d(64,128,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # Conv2d: 128 -> 128, 3x3 kernel, 1 padding
+                nn.Conv2d(128,128,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+
+                # MaxPool2d: 2x2 kernel, 2 stride
+                nn.MaxPool2d(2,stride=2),
+
+                # Third block
+                # Conv2d: 128 -> 256, 3x3 kernel, 1 padding
+                nn.Conv2d(128,256,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # Conv2d: 256 -> 256, 3x3 kernel, 1 padding
+                nn.Conv2d(256,256,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+
+                # Add dropout
+                nn.Dropout(dropout_prob),
+
+                # MaxPool2d: 2x2 kernel, 2 stride
+                nn.MaxPool2d(2,stride=2),
+
+                # Fourth block
+                # Conv2d: 256 -> 512, 3x3 kernel, 1 padding
+                nn.Conv2d(256,512,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # Add dropout
+                nn.Dropout(dropout_prob),
+
+                # Conv2d: 512 -> 512, 3x3 kernel, 1 padding
+                nn.Conv2d(512,512,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # MaxPool2d: 2x2 kernel, 2 stride
+                nn.MaxPool2d(2,stride=2)
+                )
+            
+        else:
+            # ---CODE START HERE---
+            # Step 1: Implement the features section
+            self.features = nn.Sequential(#TODO
+                # First block
+                # Conv2d: in_channels -> 64, 3x3 kernel, 1 padding
+                nn.Conv2d(in_channels,64,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # Conv2d: 64 -> 64, 3x3 kernel, 1 padding
+                nn.Conv2d(64,64,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # MaxPool2d: 2x2 kernel, 2 stride
+                nn.MaxPool2d(2,stride=2),
+                # Second block
+                # Conv2d: 64 -> 128, 3x3 kernel, 1 padding
+                nn.Conv2d(64,128,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # Conv2d: 128 -> 128, 3x3 kernel, 1 padding
+                nn.Conv2d(128,128,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # MaxPool2d: 2x2 kernel, 2 stride
+                nn.MaxPool2d(2,stride=2),
+                # Third block
+                # Conv2d: 128 -> 256, 3x3 kernel, 1 padding
+                nn.Conv2d(128,256,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # Conv2d: 256 -> 256, 3x3 kernel, 1 padding
+                nn.Conv2d(256,256,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # MaxPool2d: 2x2 kernel, 2 stride
+                nn.MaxPool2d(2,stride=2),
+                # Fourth block
+                # Conv2d: 256 -> 512, 3x3 kernel, 1 padding
+                nn.Conv2d(256,512,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # Conv2d: 512 -> 512, 3x3 kernel, 1 padding
+                nn.Conv2d(512,512,3,padding=1),
+                # ReLU
+                nn.ReLU(inplace=True),
+                # MaxPool2d: 2x2 kernel, 2 stride
+                nn.MaxPool2d(2,stride=2)
+            )
 
         # Step 2: Implement the adaptive average pooling layer
         self.avgpool = None  # TODO: Use nn.AdaptiveAvgPool2d with output size (1, 1)

@@ -78,21 +78,13 @@ class ResNetBlock(nn.Module):
         # Apply final ReLU
         identity = x
         x = self.conv1(x)
-        #print(x.shape)
         x = self.batchnorm1(x)
-        #print(x.shape)
         x = self.relu(x)
-        #print(x.shape)
         x = self.conv2(x)
-        #print(x.shape)
         x = self.batchnorm2(x)
-        #print(x.shape)
         x = self.relu(x)
-        #print(x.shape)
         x = self.conv3(x)
-        #print(x.shape)
         x = self.batchnorm3(x)
-        #print(x.shape)
 
         
         if self.identity_downsample is not None:
@@ -146,17 +138,28 @@ class ResNet50(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
+        print("Input:", x.shape)
         x = self.conv1(x)
+        print("After conv1:", x.shape)
+
         x = self.bn1(x)
         x = self.relu(x)
         x = self.maxpool(x)
+        print("After maxpool:", x.shape)
 
         x = self.layer1(x)
+        print("After layer1:", x.shape)
         x = self.layer2(x)
+        print("After layer2:", x.shape)       
         x = self.layer3(x)
+        print("After layer3:", x.shape) 
         x = self.layer4(x)
+        print("After layer4:", x.shape)
+
 
         x = self.avgpool(x)
+        print("After avgpool:", x.shape)
+
         x = torch.flatten(x, 1)
         x = self.fc(x)
 
